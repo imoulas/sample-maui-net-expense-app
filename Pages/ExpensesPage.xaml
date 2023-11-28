@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpenseApp.Pages.ExpensesPage"
+             
+             xmlns:models="clr-namespace:ExpenseApp.Models"
+             xmlns:viewmodels="clr-namespace:ExpenseApp.ViewModels"
+             x:DataType="viewmodels:ExpenseViewModel"
+             
+             Title="ExpensesPage">
+    <VerticalStackLayout Margin="5">
+        <Label 
+            Text="this is my expenses page"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+        <Button Text="Add expense" 
+                x:Name="AddExpenseBtn"
+                Clicked="AddExpenseBtn_Clicked"/>
+
+        <CollectionView ItemsSource="{Binding Items}"
+                        SelectionMode="Single"
+                        SelectionChanged="CollectionView_SelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ExpenseModel">
+
+                    <SwipeView>
+                        
+                        <SwipeView.RightItems>
+                            <SwipeItemView>
+                                <HorizontalStackLayout>
+                                    <Button Text="Delete"
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding DeleteCommand, Source={x:Reference this}}"/>
+                                    <Button Text="Edit"/>
+                                </HorizontalStackLayout>
+                            </SwipeItemView>
+                        </SwipeView.RightItems>
+                        
+                        <Border Margin="5">
+                            <Grid ColumnDefinitions="*,*,Auto">
+                                <Label Text="{Binding Name}"
+                                       Grid.Column="0"
+                                       FontAttributes="Bold"
+                                       FontSize="18"
+                                       BackgroundColor="Yellow"
+                                       Margin="5"
+                                       />
+                                <Label Text="{Binding CategoryId}"
+                                       Grid.Column="1"
+                                       BackgroundColor="LightCoral"
+                                       Margin="5"/>
+                        
+                                <Label Text="{Binding Total}"
+                                       Grid.Column="2"
+                                       FontSize="20"
+                                       BackgroundColor="LightCyan"
+                                       Margin="5"
+                                       />
+                    
+                            </Grid>
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10,10,10,10"/>
+                            </Border.StrokeShape>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+    </VerticalStackLayout>
+</ContentPage>
