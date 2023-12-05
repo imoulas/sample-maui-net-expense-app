@@ -1,4 +1,5 @@
 ﻿using ExpenseApp.Data;
+using ExpenseApp.Models;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -25,6 +26,26 @@ namespace ExpenseApp
 
             bool firstTime = Db.Database.EnsureCreated();
             Debug.WriteLine($"FIRSTIME={firstTime}");
+
+            if( firstTime )
+            {
+                Db.Categories.Add(new CategoryModel
+                {
+                    Name = "Supermarket"
+                });
+
+                Db.Categories.Add(new CategoryModel
+                {
+                    Name = "Fashion"
+                });
+
+                Db.Categories.Add(new CategoryModel
+                {
+                    Name = "Fun"
+                });
+                Db.SaveChanges();
+
+            }
 
             Db.Dispose();
 
