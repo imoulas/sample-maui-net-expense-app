@@ -17,6 +17,9 @@
         <Label Text="Expense name:" FontAttributes="Bold"/>
         <Entry Text="{Binding Item.Name, Mode=TwoWay}"/>
 
+        <Label Text="Expense category id:" FontAttributes="Bold"/>
+        <Entry Text="{Binding Item.Category.Id, Mode=TwoWay}"/>
+
         <Label Text="Total cost:" FontAttributes="Bold"/>
         <Entry Text="{Binding Item.Total, Mode=TwoWay}"/>
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ExpenseApp.Data;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace ExpenseApp
 {
@@ -18,6 +20,13 @@ namespace ExpenseApp
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            ApplicationDbContext Db = new();
+
+            bool firstTime = Db.Database.EnsureCreated();
+            Debug.WriteLine($"FIRSTIME={firstTime}");
+
+            Db.Dispose();
 
             return builder.Build();
         }

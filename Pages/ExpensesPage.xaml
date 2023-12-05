@@ -31,8 +31,7 @@
                                 <HorizontalStackLayout>
                                     <Button Text="Delete"
                                             CommandParameter="{Binding .}"
-                                            Command="{Binding DeleteCommand, Source={x:Reference this}}"/>
-                                    <Button Text="Edit"/>
+                                            Command="{Binding BindingContext.DeleteCommand, Source={x:Reference this}}"/>
                                 </HorizontalStackLayout>
                             </SwipeItemView>
                         </SwipeView.RightItems>
@@ -46,7 +45,7 @@
                                        BackgroundColor="Yellow"
                                        Margin="5"
                                        />
-                                <Label Text="{Binding CategoryId}"
+                                <Label Text="{Binding Category.Name}"
                                        Grid.Column="1"
                                        BackgroundColor="LightCoral"
                                        Margin="5"/>

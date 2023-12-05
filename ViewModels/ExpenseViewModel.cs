@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ExpenseApp.Data;
 using ExpenseApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,22 +27,23 @@ public partial class ExpenseViewModel: ObservableObject
     public ICommand SaveCommand { get; }
     public ICommand DeleteCommand { get; }
 
+    ApplicationDbContext Db = new();
+
     public ExpenseViewModel()
     {
-        //todo expense viewmodel
-
         Debug.WriteLine("expense view moooooodel");
 
         SaveCommand = new RelayCommand(SaveProcess);
         DeleteCommand = new RelayCommand<ExpenseModel>(DeleteProcess);
 
-        LoadItems(); //-->OnAppearing
+        LoadItems(); 
     }
 
     private void DeleteProcess(ExpenseModel model)
     {
         Items.Remove(model);
         //todo remove from database
+        Db.SaveChanges();
     }
 
     private async void SaveProcess()
@@ -48,17 +51,12 @@ public partial class ExpenseViewModel: ObservableObject
         Debug.WriteLine("saaaaave");
         if (isNew == true)
         {
-            if (Items.Count == 0)
-            {
-                Item.Id = 1;
-            }
-            else
-            {
-                Item.Id = Items.Last().Id + 1;
-            }
+            //todo save to database
+            Db.Expenses.Add(Item);
+            Db.SaveChanges();
+
             Items.Add(Item);
 
-            //todo save to database
         } else
         {
             int index = Items.IndexOf( 
@@ -66,9 +64,10 @@ public partial class ExpenseViewModel: ObservableObject
                                 );
 
             Items[index] = Item;
-            //todo update database
-        }
 
+            Db.SaveChanges();
+        }
+       
     }
 
     public void LoadItems()
@@ -78,53 +77,19 @@ public partial class ExpenseViewModel: ObservableObject
         Items.Clear();
         //todo read from database
 
-        
-        ExpenseModel exp1 = new()
+        List<ExpenseModel> myList = Db.Expenses
+                                        .Include(categ=>categ.Category)
+                                        .OrderBy(exp=> exp.Name)
+                                        .ToList();
+        // select * from expenses
+        // inner join categories on expenses.categoryid=categories.id
+        // order by expenses.name
+
+        foreach(ExpenseModel model in myList)
         {
-            Id = 1,
-            Name = "exodo 1",
-            Total = 100,
-            CategoryId = 1
-        };
+            Items.Add(model);
+        }
 
-        Items.Add(exp1);
-
-        ExpenseModel exp2 = new()
-        {
-            Id = 2,
-            Name = "exodo 2",
-            Total = 222,
-            CategoryId = 1
-        };
-
-        Items.Add(exp2);
-
-        ExpenseModel exp3 = new()
-        {
-            Id = 3,
-            Name = "exodo 3",
-            Total = 123,
-            CategoryId = 1
-        };
-
-        Items.Add(exp3);
-
-        Items.Add(new ExpenseModel
-        {
-            Id = 4,
-            Name = "exodo 4",
-            Total = 44,
-            CategoryId = 1
-        });
-
-        Items.Add(new ExpenseModel
-        {
-            Id = 5,
-            Name = "exodo 5",
-            Total = 505,
-            CategoryId = 1
-        });
-        
     }
 
 }
