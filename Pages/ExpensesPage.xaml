@@ -18,7 +18,8 @@
                 x:Name="AddExpenseBtn"
                 Clicked="AddExpenseBtn_Clicked"/>
 
-        <CollectionView ItemsSource="{Binding Items}"
+        <CollectionView x:Name="collectionView" 
+                        ItemsSource="{Binding Items}"
                         SelectionMode="Single"
                         SelectionChanged="CollectionView_SelectionChanged">
             <CollectionView.ItemTemplate>
@@ -28,11 +29,11 @@
                         
                         <SwipeView.RightItems>
                             <SwipeItemView>
-                                <HorizontalStackLayout>
-                                    <Button Text="Delete"
-                                            CommandParameter="{Binding .}"
-                                            Command="{Binding BindingContext.DeleteCommand, Source={x:Reference this}}"/>
-                                </HorizontalStackLayout>
+
+                                <Button Text="Delete"
+                                        CommandParameter="{Binding}"
+                                        Command="{Binding Source={x:Reference collectionView}, Path=BindingContext.DeleteCommand}"/>
+
                             </SwipeItemView>
                         </SwipeView.RightItems>
                         
