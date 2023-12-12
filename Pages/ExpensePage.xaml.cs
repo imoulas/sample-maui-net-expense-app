@@ -11,13 +11,4 @@ public partial class ExpensePage : ContentPage
         BindingContext = viewModel;
     }
 
-    private async void SaveBtn_Clicked(object sender, EventArgs e)
-    {
-        ExpenseViewModel viewModel = (ExpenseViewModel)BindingContext;
-        if (viewModel.SaveCommand.CanExecute(null))
-        {
-            viewModel.SaveCommand.Execute(null);
-            await Shell.Current.Navigation.PopAsync();
-        }
-    }
 }

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using ExpenseApp.Data;
 using ExpenseApp.Models;
+using ExpenseApp.Pages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Application = Microsoft.Maui.Controls.Application;
 
 namespace ExpenseApp.ViewModels;
 
@@ -20,35 +22,67 @@ public partial class ExpenseViewModel: ObservableObject
     ObservableCollection<ExpenseModel> items = new();
 
     [ObservableProperty]
+    ObservableCollection<CategoryModel> categories = new();
+
+    [ObservableProperty]
     ExpenseModel item = new();
 
     public bool isNew = false;
 
+    // CRUD Create-Read-Update-Remove
     public ICommand SaveCommand { get; }
     public ICommand DeleteCommand { get; }
+    public ICommand AddCommand { get;  }
+    public ICommand UpdateCommand { get; }
 
     ApplicationDbContext Db = new();
 
     public ExpenseViewModel()
     {
-        Debug.WriteLine("expense view moooooodel");
+        Debug.WriteLine( nameof(ExpenseViewModel) );
 
         SaveCommand = new RelayCommand(SaveProcess);
         DeleteCommand = new RelayCommand<ExpenseModel>(DeleteProcess);
+        AddCommand = new RelayCommand(AddProcess);
+        UpdateCommand = new RelayCommand<ExpenseModel>(UpdateProcess);
 
-        LoadItems(); 
+        LoadItems();
+        LoadCategories();
     }
 
-    private void DeleteProcess(ExpenseModel model)
+    private async void DeleteProcess(ExpenseModel model)
     {
-        Items.Remove(model);
-        //todo remove from database
-        Db.SaveChanges();
+        Debug.WriteLine(nameof(DeleteProcess));
+        bool confirm = await Application.Current.MainPage
+                    .DisplayAlert("Warning", "Are you sure?", "Yes", "No");
+
+        if (confirm)
+        {
+            Items.Remove(model);
+            Db.SaveChanges();
+        }
     }
 
-    private async void SaveProcess()
+    private void AddProcess()
     {
-        Debug.WriteLine("saaaaave");
+        Debug.WriteLine(nameof(AddProcess));
+        isNew = true;
+        Item = new();
+        Shell.Current.Navigation.PushAsync(new ExpensePage(this));
+    }
+
+    private void UpdateProcess(ExpenseModel model)
+    {
+        Debug.WriteLine(nameof(UpdateProcess));
+        isNew = false;
+        Item = model;
+        Shell.Current.Navigation.PushAsync(new ExpensePage(this));
+    }
+
+    private void SaveProcess()
+    {
+        Debug.WriteLine(nameof(SaveProcess));
+
         if (isNew == true)
         {
             //todo save to database
@@ -67,27 +101,40 @@ public partial class ExpenseViewModel: ObservableObject
 
             Db.SaveChanges();
         }
-       
+        Shell.Current.Navigation.PopAsync();
     }
 
     public void LoadItems()
     {
-        Debug.WriteLine("===LoadItems====");
+        Debug.WriteLine("===LoadItems===");
 
         Items.Clear();
         //todo read from database
 
         List<ExpenseModel> myList = Db.Expenses
-                                        .Include(categ=>categ.Category)
-                                        .OrderBy(exp=> exp.Name)
+                                        .Include(categ => categ.Category)
+                                        .OrderBy(exp => exp.Name)
                                         .ToList();
         // select * from expenses
         // inner join categories on expenses.categoryid=categories.id
         // order by expenses.name
 
-        foreach(ExpenseModel model in myList)
+        foreach (ExpenseModel model in myList)
         {
+               
             Items.Add(model);
+               
+        }
+    }
+
+    private void LoadCategories()
+    {
+        Categories.Clear();
+
+        List<CategoryModel> myList = Db.Categories.ToList();
+        foreach (CategoryModel model in myList)
+        {
+            Categories.Add(model);
         }
 
     }

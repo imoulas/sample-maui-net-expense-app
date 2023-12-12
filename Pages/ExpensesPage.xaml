@@ -7,21 +7,22 @@
              xmlns:viewmodels="clr-namespace:ExpenseApp.ViewModels"
              x:DataType="viewmodels:ExpenseViewModel"
              
-             Title="ExpensesPage">
-    <VerticalStackLayout Margin="5">
-        <Label 
-            Text="this is my expenses page"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             Title="My Expenses">
 
-        <Button Text="Add expense" 
-                x:Name="AddExpenseBtn"
-                Clicked="AddExpenseBtn_Clicked"/>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add"
+                     IconImageSource="icons8_add_24"
+                     Command="{Binding AddCommand}" />
+    </ContentPage.ToolbarItems>
+    
+    <VerticalStackLayout Margin="5">
 
         <CollectionView x:Name="collectionView" 
                         ItemsSource="{Binding Items}"
                         SelectionMode="Single"
-                        SelectionChanged="CollectionView_SelectionChanged">
+                        SelectionChangedCommand="{Binding UpdateCommand}"
+                        SelectionChangedCommandParameter="{Binding Source={x:Reference collectionView}, Path=SelectedItem }">
+            
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:ExpenseModel">
 
@@ -38,8 +39,10 @@
                         </SwipeView.RightItems>
                         
                         <Border Margin="5">
-                            <Grid ColumnDefinitions="*,*,Auto">
+                            <Grid ColumnDefinitions="*,*,100">
                                 <Label Text="{Binding Name}"
+                                       LineBreakMode="WordWrap"
+                                       VerticalTextAlignment="Center"
                                        Grid.Column="0"
                                        FontAttributes="Bold"
                                        FontSize="18"
@@ -47,11 +50,15 @@
                                        Margin="5"
                                        />
                                 <Label Text="{Binding Category.Name}"
+                                       LineBreakMode="WordWrap"
+                                       VerticalTextAlignment="Center"
                                        Grid.Column="1"
                                        BackgroundColor="LightCoral"
                                        Margin="5"/>
                         
                                 <Label Text="{Binding Total}"
+                                       HorizontalTextAlignment="End"
+                                       VerticalTextAlignment="Center"
                                        Grid.Column="2"
                                        FontSize="20"
                                        BackgroundColor="LightCyan"

@@ -7,38 +7,73 @@
              xmlns:viewmodels="clr-namespace:ExpenseApp.ViewModels"
              x:DataType="viewmodels:ExpenseViewModel"
              
-             Title="ExpensePage">
-    <VerticalStackLayout Margin="5">
-        <Label 
-            Text="Type your expense"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+             Title="My Expense">
 
-        <Label Text="Expense name:" FontAttributes="Bold"/>
-        <Entry Text="{Binding Item.Name, Mode=TwoWay}"/>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="icons8_save_24"
+                     Command="{Binding SaveCommand}" />
+    </ContentPage.ToolbarItems>
 
-        <Label Text="Expense category id:" FontAttributes="Bold"/>
-        <Entry Text="{Binding Item.Category.Id, Mode=TwoWay}"/>
+    <Grid RowDefinitions="Auto,*,Auto" >
 
-        <Label Text="Total cost:" FontAttributes="Bold"/>
-        <Entry Text="{Binding Item.Total, Mode=TwoWay}"/>
+        <VerticalStackLayout
+            Margin="10"
+            Grid.Row="0">
+            <Label 
+                Text="Type your expense"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
 
-        <Button Text="Update" 
-                BackgroundColor="LightBlue"
-                Clicked="SaveBtn_Clicked">
-            <Button.Triggers>
-                <DataTrigger TargetType="Button"
-                             Binding="{Binding Item.Id}"
-                             Value="0">
-                    <Setter Property="Text"
-                            Value="Save"/>
-                    <Setter Property="BackgroundColor"
-                            Value="LightCoral"/>
-                </DataTrigger>
-            </Button.Triggers>
-        </Button>
+            <Label Text="Expense name:" FontAttributes="Bold"/>
+            <Entry Text="{Binding Item.Name, Mode=TwoWay}"/>
 
-        <Label Text="{Binding Item.Id}"/>
+            <Label Text="Expense category:" FontAttributes="Bold"/>
+
+            <Picker Title="Select a category"
+                    SelectedItem="{Binding Item.Category}"
+                    ItemsSource="{Binding Categories}"
+                    ItemDisplayBinding="{Binding Name}" />
         
-    </VerticalStackLayout>
+            <Label Text="Total cost:" FontAttributes="Bold"/>
+            <Entry Text="{Binding Item.Total, Mode=TwoWay}"/>
+        </VerticalStackLayout>
+
+        <!-- empty space -->
+
+        <VerticalStackLayout 
+            Grid.Row="2"
+            Margin="10" BackgroundColor="Aquamarine">
+            <Image Margin="5"
+                Source="icons8_save_24"/>
+            <Label Margin="5" 
+                    Text="Update" 
+                    HorizontalTextAlignment="Center">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                    Binding="{Binding Item.Id}"
+                                    Value="0">
+                        <Setter Property="Text"
+                                Value="Save"/>
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+
+            <VerticalStackLayout.Triggers>
+                <DataTrigger TargetType="VerticalStackLayout"
+                    Binding="{Binding Item.Id}"
+                    Value="0">
+                    <Setter Property="BackgroundColor"
+                    Value="LightCoral"/>
+                </DataTrigger>
+            </VerticalStackLayout.Triggers>
+            
+
+            <VerticalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer
+                    NumberOfTapsRequired="1"
+                    Command="{Binding SaveCommand}"/>
+            </VerticalStackLayout.GestureRecognizers>
+        </VerticalStackLayout>
+    </Grid>
+
 </ContentPage>
