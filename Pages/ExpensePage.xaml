@@ -29,11 +29,11 @@
 
             <Label Text="Expense category:" FontAttributes="Bold"/>
 
-            <Picker Title="Select a category"
+            <Picker ItemsSource="{Binding Categories}"
                     SelectedItem="{Binding Item.Category}"
-                    ItemsSource="{Binding Categories}"
-                    ItemDisplayBinding="{Binding Name}" />
-        
+                    Title="Select a category"
+                    ItemDisplayBinding="{Binding Name}"/>
+
             <Label Text="Total cost:" FontAttributes="Bold"/>
             <Entry Text="{Binding Item.Total, Mode=TwoWay}"/>
         </VerticalStackLayout>
