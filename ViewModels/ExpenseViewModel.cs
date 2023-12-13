@@ -25,6 +25,9 @@ public partial class ExpenseViewModel: ObservableObject
     ObservableCollection<CategoryModel> categories = new();
 
     [ObservableProperty]
+    bool loading;
+
+    [ObservableProperty]
     ExpenseModel item = new();
 
     public bool isNew = false;
@@ -46,8 +49,15 @@ public partial class ExpenseViewModel: ObservableObject
         AddCommand = new RelayCommand(AddProcess);
         UpdateCommand = new RelayCommand<ExpenseModel>(UpdateProcess);
 
-        LoadItems();
-        LoadCategories();
+        Task.Run(async () =>
+        {
+            Loading = true;
+            await LoadItems();
+            await LoadCategories();
+            Loading = false;
+
+        }).ConfigureAwait(false);
+        
     }
 
     private async void DeleteProcess(ExpenseModel model)
@@ -59,7 +69,7 @@ public partial class ExpenseViewModel: ObservableObject
         if (confirm)
         {
             Items.Remove(model);
-            Db.SaveChanges();
+            await Db.SaveChangesAsync();
         }
     }
 
@@ -79,15 +89,14 @@ public partial class ExpenseViewModel: ObservableObject
         Shell.Current.Navigation.PushAsync(new ExpensePage(this));
     }
 
-    private void SaveProcess()
+    private async void SaveProcess()
     {
         Debug.WriteLine(nameof(SaveProcess));
 
         if (isNew == true)
         {
-            //todo save to database
             Db.Expenses.Add(Item);
-            Db.SaveChanges();
+            await Db.SaveChangesAsync();
 
             Items.Add(Item);
 
@@ -99,39 +108,44 @@ public partial class ExpenseViewModel: ObservableObject
 
             Items[index] = Item;
 
-            Db.SaveChanges();
+            await Db.SaveChangesAsync();
         }
-        Shell.Current.Navigation.PopAsync();
+
+        await Shell.Current.Navigation.PopAsync();
     }
 
-    public void LoadItems()
+    protected async Task LoadItems()
     {
-        Debug.WriteLine("===LoadItems===");
+        Debug.WriteLine(nameof(LoadItems));
 
         Items.Clear();
         //todo read from database
 
-        List<ExpenseModel> myList = Db.Expenses
+        List<ExpenseModel> myList = await Db.Expenses
                                         .Include(categ => categ.Category)
                                         .OrderBy(exp => exp.Name)
-                                        .ToList();
+                                        .ToListAsync();
+        // query executed:
         // select * from expenses
         // inner join categories on expenses.categoryid=categories.id
         // order by expenses.name
 
         foreach (ExpenseModel model in myList)
         {
-               
             Items.Add(model);
-               
         }
+
     }
 
-    private void LoadCategories()
+    protected async Task LoadCategories()
     {
+        Debug.WriteLine(nameof(LoadCategories));
+
         Categories.Clear();
 
-        List<CategoryModel> myList = Db.Categories.ToList();
+        List<CategoryModel> myList = await Db.Categories
+                                            .ToListAsync();
+
         foreach (CategoryModel model in myList)
         {
             Categories.Add(model);

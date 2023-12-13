@@ -11,11 +11,17 @@ namespace ExpenseApp.Models;
 /// <summary>
 /// This is the main expense model
 /// </summary>
-public class ExpenseModel:ObservableObject
+public partial class ExpenseModel :ObservableObject
 {
     [Key]
     public int Id { get; set; }
-    public string Name { get; set; }
-    public int Total { get; set; }
-    public CategoryModel Category { get; set; }
+
+    [ObservableProperty]
+    string name;
+
+    [ObservableProperty]
+    int total;
+
+    [ObservableProperty]
+    CategoryModel category;
 }

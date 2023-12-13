@@ -11,10 +11,12 @@ namespace ExpenseApp.Models;
 /// <summary>
 /// This is the category model
 /// </summary>
-public class CategoryModel:ObservableObject
+public partial class CategoryModel :ObservableObject
 {
     [Key]
     public int Id { get; set; }
-    public string Name { get; set; }
+
+    [ObservableProperty]
+    string name;
   
 }

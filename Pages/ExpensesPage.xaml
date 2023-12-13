@@ -17,6 +17,8 @@
     
     <VerticalStackLayout Margin="5">
 
+        <ActivityIndicator IsRunning="{Binding Loading}" />
+        
         <CollectionView x:Name="collectionView" 
                         ItemsSource="{Binding Items}"
                         SelectionMode="Single"
