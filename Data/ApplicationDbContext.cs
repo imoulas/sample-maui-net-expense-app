@@ -15,6 +15,7 @@ public class ApplicationDbContext: DbContext
     //database tables
     public DbSet<ExpenseModel> Expenses { get; set; }
     public DbSet<CategoryModel> Categories { get; set; }
+    public DbSet<ItemImageModel> ItemImages { get; set; }
 
     public string DBPath { get; private set; }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)

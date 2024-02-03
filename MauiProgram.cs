@@ -43,6 +43,21 @@ namespace ExpenseApp
                 {
                     Name = "Fun"
                 });
+
+                string[] colors = { "red", "green", "yellow", "brown" };
+                int[] heights = { 40, 80, 100, 90 };
+
+                Random rnd = new Random();
+                for (int i=0;i<100;i++) {
+                    Db.ItemImages.Add(new ItemImageModel
+                    {
+                        Name = $"Image {i}",
+                        ImageName = i.ToString(),
+                        Color = colors[rnd.Next(3)],
+                        LayoutHeight = heights[rnd.Next(3)]
+                    });
+                }
+
                 Db.SaveChanges();
 
             }

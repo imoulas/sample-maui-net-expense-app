@@ -26,7 +26,11 @@ namespace ExpenseApp
         private async void ExpensesBtn_Clicked(object sender, EventArgs e)
         {
             await Shell.Current.Navigation.PushAsync(new ExpensesPage());
-            // 2
+        }
+
+        private async void MasonryBtn_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.Navigation.PushAsync(new MasonryPage());
         }
     }
 

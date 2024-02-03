@@ -40,6 +40,11 @@
                 Text="Expenses page"
                 Clicked="ExpensesBtn_Clicked"/>
 
+            <Button 
+                x:Name="MasonryBtn"
+                Text="A masonry view page"
+                Clicked="MasonryBtn_Clicked"/>
+
         </VerticalStackLayout>
     </ScrollView>
 
