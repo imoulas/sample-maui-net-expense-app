@@ -32,22 +32,11 @@ public partial class ExpenseViewModel: ObservableObject
 
     public bool isNew = false;
 
-    // CRUD Create-Read-Update-Remove
-    public ICommand SaveCommand { get; }
-    public ICommand DeleteCommand { get; }
-    public ICommand AddCommand { get;  }
-    public ICommand UpdateCommand { get; }
-
     ApplicationDbContext Db = new();
 
     public ExpenseViewModel()
     {
         Debug.WriteLine( nameof(ExpenseViewModel) );
-
-        SaveCommand = new RelayCommand(SaveProcess);
-        DeleteCommand = new RelayCommand<ExpenseModel>(DeleteProcess);
-        AddCommand = new RelayCommand(AddProcess);
-        UpdateCommand = new RelayCommand<ExpenseModel>(UpdateProcess);
 
         Task.Run(async () =>
         {
@@ -60,9 +49,10 @@ public partial class ExpenseViewModel: ObservableObject
         
     }
 
-    private async void DeleteProcess(ExpenseModel model)
+    [RelayCommand]
+    async Task Delete(ExpenseModel model)
     {
-        Debug.WriteLine(nameof(DeleteProcess));
+        Debug.WriteLine(nameof(Delete));
         bool confirm = await Application.Current.MainPage
                     .DisplayAlert("Warning", "Are you sure?", "Yes", "No");
 
@@ -73,25 +63,28 @@ public partial class ExpenseViewModel: ObservableObject
         }
     }
 
-    private void AddProcess()
+    [RelayCommand]
+    async Task Add()
     {
-        Debug.WriteLine(nameof(AddProcess));
+        Debug.WriteLine(nameof(Add));
         isNew = true;
         Item = new();
-        Shell.Current.Navigation.PushAsync(new ExpensePage(this));
+        await Shell.Current.Navigation.PushAsync(new ExpensePage(this));
     }
 
-    private void UpdateProcess(ExpenseModel model)
+    [RelayCommand]
+    async Task Update(ExpenseModel model)
     {
-        Debug.WriteLine(nameof(UpdateProcess));
+        Debug.WriteLine(nameof(Update));
         isNew = false;
         Item = model;
-        Shell.Current.Navigation.PushAsync(new ExpensePage(this));
+        await Shell.Current.Navigation.PushAsync(new ExpensePage(this));
     }
 
-    private async void SaveProcess()
+    [RelayCommand]
+    async Task Save()
     {
-        Debug.WriteLine(nameof(SaveProcess));
+        Debug.WriteLine(nameof(Save));
 
         if (isNew == true)
         {
